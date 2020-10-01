@@ -1,4 +1,5 @@
-const { fetch } = require('./fetch');
+const { fetchArticles } = require('./fetch-articles');
+const { fetchSources } = require('./fetch-sources');
 const { process } = require('./process');
 
 exports.sourceNodes = async ({ boundActionCreators }, { apiKey, variables }) => {
@@ -9,16 +10,15 @@ exports.sourceNodes = async ({ boundActionCreators }, { apiKey, variables }) => 
   // Do the initial fetch
   console.time(`\nFetch NewsAPI data`)
   console.log(`Starting to fetch data from NewsAPI...`)
-  console.log(sources, queries)
 
   // Create nodes here, generally by downloading data
   // from a remote API.
-  const  { data } = await fetch(apiKey, sources, queries);
+  const { data: { sources }} = await fetchSources(apiKey)
+  const  { data: { articles } } = await fetchArticles(apiKey, sources, queries);
   console.timeEnd(`\nFetch NewsAPI data`)
 
-  // Process data into nodes.
-  const { articles } = data;
-  articles.forEach(article => createNode(process(article)));
+  articles.forEach(article => createNode(process(article, 'newsArticles')));
+  sources.forEach(source => createNode(process(source, 'newsSources')));
 
   // We're done, return.
   return;

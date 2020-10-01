@@ -1,17 +1,17 @@
 const uuidv4 = require('uuid/v4')
 const crypto = require(`crypto`)
 
-exports.process = article => {
+exports.process = (item, type) => {
   return {
-    ...article,
+    ...item,
     id: uuidv4(),
     parent: null,
     children: [],
     internal: {
-      type: `NewsApiEverything`,
+      type,
       contentDigest: crypto
         .createHash(`md5`)
-        .update(JSON.stringify(article))
+        .update(JSON.stringify(item))
         .digest(`hex`),
     }
   }
