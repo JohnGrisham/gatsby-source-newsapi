@@ -1,6 +1,6 @@
 const axios = require(`axios`)
 
-exports.fetch = apiKey => {
-  const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-  return axios.get(url);
+exports.fetch = (apiKey, sources, queries) => {
+  const url = `https://newsapi.org/v2/everything${ queries ? `?q=${queries.join(' OR ')}`: ''}${ sources ? `${queries ? '&' : '?'}sources=${sources.join(',')}`: ''}&pageSize=100&langauge=en`;
+  return axios.get(url, { headers: { "X-Api-Key": `${apiKey}` } });
 }
